@@ -1,65 +1,73 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { AuthContext } from "../context";
 import { auth } from "../firebase/firebase.init";
 import { useEffect, useState } from "react";
 
+export default function AuthProvider({ children }) {
+  const [users, setUsers] = useState(null);
+  const [isLoader, setIsLoader] = useState(true);
+  const [addToCart, setAddToCart] = useState([]);
+  const [product, setProduct] = useState("");
 
+  const provider = new GoogleAuthProvider();
 
-export default function AuthProvider({children}) {
-    const [users, setUsers] = useState(null)
-    const [isLoader, setIsLoader] = useState(true)
-    const [addToCart,setAddToCart] = useState([])
-    const [product, setProduct] = useState('')
+  // Create user
+  const createUser = (email, password) => {
+    setIsLoader(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
+  // Sign in with email and password
+  const signIn = (email, password) => {
+    setIsLoader(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-    const createUser = (email, password) =>{
-        setIsLoader(true)
-       return createUserWithEmailAndPassword(auth,email,password)
+  // Google sign-in
+  const signInWithGoogle = () => {
+    setIsLoader(true);
+    return signInWithPopup(auth, provider);
+  };
 
-    }
-    const signIn = (email, password) =>{
-        setIsLoader(true)
-       return signInWithEmailAndPassword(auth,email,password)
+  // Sign out user
+  const signOutUser = () => {
+    setIsLoader(true);
+    signOut(auth);
+  };
 
-    }
-    const signOutUser =() => {
-        setIsLoader(true)
-        signOut(auth)
-    }
-    useEffect(()=>{
-       const unSubscribe = onAuthStateChanged(auth, (currantUser) =>{
-            if (currantUser) {
-                setUsers(currantUser)
-                setIsLoader(false)
-            } else{
-                setUsers(null)
-                setIsLoader(true)
-            }
-        })
-        return()=>{
-            unSubscribe()
-        }
+  // Monitor authentication state
+  useEffect(() => {
+    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUsers(currentUser);
+        setIsLoader(false);
+      } else {
+        setUsers(null);
+        setIsLoader(false);
+      }
+    });
+    return () => {
+      unSubscribe();
+    };
+  }, []);
 
-    },[])
-    const authInfo = {
-        users,
-        setUsers,
-        createUser,
-        signIn,
-        isLoader,
-        signOutUser,
-        setAddToCart,
-        addToCart,
-        setProduct,
-        product
-
-    }
+  const authInfo = {
+    users,
+    setUsers,
+    createUser,
+    signIn,
+    signInWithGoogle,
+    isLoader,
+    signOutUser,
+    setAddToCart,
+    addToCart,
+    setProduct,
+    product,
+  };
 
   return (
-    <div>
-        <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
-    </div>
-  )
+    <AuthContext.Provider value={authInfo}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
-
-// export default AuthProvider

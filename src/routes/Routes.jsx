@@ -9,6 +9,7 @@ import Allproduct from "../pages/Allproduct";
 import ProductWear from "../pages/ProductWear";
 import AddToCart from "../addToCart/AddToCart";
 import Product_Details from "../pages/Product_Details";
+import ErrorPage from "../components/Error/ErrorPage";
 
 
 
@@ -39,13 +40,17 @@ const route = createBrowserRouter([
             },
             {
                 path: "/productWear",
-                element: <ProductWear />,
+                element: <PrivateRoutes>
+                            <ProductWear />
+                         </PrivateRoutes>,
                 loader: ()=> fetch('/products.json')
 
             },
             {
                 path: '/add-to-cart',
-                element: <AddToCart />
+                element: <PrivateRoutes>
+                           <AddToCart />
+                           </PrivateRoutes>
             },
             {
                 path: '/Products/:details',
@@ -56,6 +61,10 @@ const route = createBrowserRouter([
                 element:<PrivateRoutes>
                             <Profile />
                         </PrivateRoutes>
+            },
+            {
+                path: "*",
+                element: <ErrorPage />
             }
         ]
     }

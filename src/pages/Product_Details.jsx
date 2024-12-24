@@ -1,12 +1,21 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../context";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function Product_Details() {
+  const { addToCart, setAddToCart, product } = useContext(AuthContext);
 
-  const { addToCart, setAddToCart ,product} = useContext(AuthContext);
-
+   useEffect(() => {
+        AOS.init({
+            duration: 800,
+            easing: "ease-in-out",
+            once: true,
+        });
+    }, []);
+    
   const addHandler = (product) => {
-      console.log(product);
+    console.log(product);
 
     const exist = addToCart.find((item) => item.id === product.id);
 
@@ -16,31 +25,19 @@ function Product_Details() {
   };
 
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto mt-10" data-aos="zoom-in">
       <div className="flex flex-col lg:flex-row">
         {/* Thumbnail Images */}
         <div className="flex flex-col items-center lg:items-start">
           <div className="flex flex-col space-y-4">
-            <img
-              src={product.image}
-              alt={product.title}
-              className="object-cover w-24 h-24"
-            />
-            <img
-              src={product.image}
-              alt={product.title}
-              className="object-cover w-24 h-24"
-            />
-            <img
-              src={product.image}
-              alt={product.title}
-              className="object-cover w-24 h-24"
-            />
-            <img
-              src={product.image}
-              alt={product.title}
-              className="object-cover w-24 h-24"
-            />
+            {[...Array(3)].map((_, index) => (
+              <img
+                key={index}
+                src={product.image}
+                alt={product.title}
+                className="object-cover w-24 h-24"
+              />
+            ))}
           </div>
         </div>
 
@@ -59,7 +56,8 @@ function Product_Details() {
             <a href="#" className="hover:underline">
               Account
             </a>{" "}
-            / <a href="#" className="hover:underline">
+            /{" "}
+            <a href="#" className="hover:underline">
               {product.category}
             </a>{" "}
             / {product.title}
@@ -78,9 +76,7 @@ function Product_Details() {
                 />
               ))}
             </div>
-            <span className="ml-2 text-sm text-gray-500">
-              (150 Reviews)
-            </span>
+            <span className="ml-2 text-sm text-gray-500">(150 Reviews)</span>
           </div>
           <div className="mb-4 text-lg text-green-500">In Stock</div>
           <div className="mb-4 text-2xl font-bold">${product.price}</div>
@@ -88,17 +84,17 @@ function Product_Details() {
 
           {/* Add to Cart Button */}
           <div className="flex items-center mb-4">
-          <button
-            onClick={() => addHandler(product)}
-            className={` px-3 rounded-md py-2 text-center text-white transition-opacity duration-300 ${
-            addToCart.find((items) => items.id === product.id)
-                ? "bg-rose-500"
-                : "bg-black"
-            }`}
-        >
-            {addToCart.find((items) => items.id === product.id)
-            ? "Already Added"
-            : "Add To Cart"}
+            <button
+              onClick={() => addHandler(product)}
+              className={`px-3 py-2 rounded-md text-center text-white transition-opacity duration-300 ${
+                addToCart.find((items) => items.id === product.id)
+                  ? "bg-rose-500"
+                  : "bg-black"
+              }`}
+            >
+              {addToCart.find((items) => items.id === product.id)
+                ? "Already Added"
+                : "Add To Cart"}
             </button>
           </div>
 
@@ -107,20 +103,14 @@ function Product_Details() {
             <div className="flex items-center mb-2">
               <i className="mr-2 text-gray-500 fas fa-truck"></i>
               <span className="text-gray-700">Free Delivery</span>
-              <a
-                href="#"
-                className="ml-2 text-blue-500 hover:underline"
-              >
+              <a href="#" className="ml-2 text-blue-500 hover:underline">
                 Enter your postal code for Delivery Availability
               </a>
             </div>
             <div className="flex items-center">
               <i className="mr-2 text-gray-500 fas fa-undo"></i>
               <span className="text-gray-700">Return Delivery</span>
-              <a
-                href="#"
-                className="ml-2 text-blue-500 hover:underline"
-              >
+              <a href="#" className="ml-2 text-blue-500 hover:underline">
                 Free 30 Days Delivery Returns. Details
               </a>
             </div>

@@ -12,9 +12,9 @@ import { FiMenu } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 
 
-const Navbar = ({ handleOrderPopup }) => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { users, setUsers, signOutUser } = useContext(AuthContext);
+  const { users, setUsers, signOutUser, addToCart} = useContext(AuthContext);
 
 
   // Toggle menu
@@ -29,18 +29,24 @@ const Navbar = ({ handleOrderPopup }) => {
       name: "Home",
       link: "/#",
     },
-    {
-      id: 2,
-      name: "Top Rated",
-      link: "/#services",
-    },
-    {
-      id: 3,
-      name: "Kids Wear",
-      link: "/productWear",
-    },
-
-
+    ...(users
+      ? [
+          {
+            id: 2,
+            name: "Top Rated",
+            link: "/allproduct",
+          },
+        ]
+      : []),
+    ...(users
+      ? [
+          {
+            id: 3,
+            name: "Kids Wear",
+            link: "/productWear",
+          },
+        ]
+      : []),
     ...(users
       ? [
           {
@@ -87,13 +93,19 @@ const Navbar = ({ handleOrderPopup }) => {
               </div>
 
               {/* order button */}
-              <Link to={'/add-to-cart'}
-                onClick={() => handleOrderPopup()}
-                className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white  py-1 px-4 rounded-full flex items-center gap-3 group"
+              <Link to={users ? '/add-to-cart' : '/login'}
+
+                className="relative bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white  py-1 px-4 rounded-full flex items-center gap-3 group"
               >
                 <span className="group-hover:block hidden transition-all duration-200">
                   Order
                 </span>
+                {
+                    addToCart.length === 0 ? '' : <div className='w-5 h-5  absolute -top-3 -right-1  rounded-full flex justify-center items-center text-white font-semibold bg-red-500'>
+                      <span className='text-[13px]'>{addToCart.length}</span>
+
+                    </div>
+                    }
                 <FaCartShopping className="text-xl text-white drop-shadow-sm cursor-pointer" />
               </Link>
 

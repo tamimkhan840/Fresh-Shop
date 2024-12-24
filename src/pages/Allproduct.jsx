@@ -1,5 +1,7 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { AuthContext } from "../context";
 
 const womenClothing = [
@@ -100,6 +102,15 @@ function Allproduct() {
     const [favorites, setFavorites] = useState([]);
      const {addToCart,setAddToCart, setProduct} = useContext(AuthContext)
 
+
+     useEffect(() => {
+      AOS.init({
+          duration: 800,
+          easing: "ease-in-out",
+          once: true, 
+      });
+  }, []);
+
     const toggleFavorite = (id) => {
         setFavorites((prev) =>
             prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -108,7 +119,7 @@ function Allproduct() {
 
     const addHandler = (product) => {
       console.log(product);
-      
+
       const exist = addToCart.find((item) => item.id === product.id);
 
       if (!exist) {
@@ -130,7 +141,7 @@ function Allproduct() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6 container">
                     {womenClothing.map((item) => (
                         <div
-                        data-aos="fade-up"
+                        data-aos="zoom-in"
                         data-aos-delay={item.aosDelay}
                         key={item.id}
                         className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden relative"

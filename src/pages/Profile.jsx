@@ -25,7 +25,7 @@ function Profile() {
       <p className="mb-4 text-lg text-gray-600 dark:text-white">
         I am a <span className="text-blue-500">Web Developer</span> & <span className="text-pink-500">Designer</span>.
       </p>
-        
+
       <a
         href="#projects"
         className="px-6 py-2 text-white transition-all bg-purple-600 rounded-lg shadow-md hover:bg-purple-700"
